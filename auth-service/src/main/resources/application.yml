@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: auth-service
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ticketblitz
+    username: benny
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  # Jackson Configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+# Server Configuration
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+# JWT Configuration
+jwt:
+  secret: TicketBlitzSecretKeyForJWTTokenGenerationMustBeLongEnough256Bits
+  expiration: 86400000  # 24 hours in milliseconds
+  refresh-expiration: 604800000  # 7 days in milliseconds
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    enabled: false  # Disable default Swagger UI (using Scalar instead)
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+# Logging Configuration
+logging:
+  level:
+    com.ticketblitz: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG

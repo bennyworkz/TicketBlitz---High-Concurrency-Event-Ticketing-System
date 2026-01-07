@@ -1,0 +1,51 @@
+# Test Configuration for Event Service
+# Uses existing Docker containers (run: docker-compose up -d)
+
+spring:
+  application:
+    name: event-service-test
+
+  # PostgreSQL (existing Docker container)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ticketblitz
+    username: benny
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update  # Don't drop tables, just update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Redis Configuration (existing Docker container)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000  # 1 minute for tests
+      cache-null-values: false
+
+# Disable DataInitializer for tests
+data:
+  initializer:
+    enabled: false
+
+# Logging
+logging:
+  level:
+    com.ticketblitz.event: INFO
+    org.springframework.cache: INFO
+    org.hibernate.SQL: INFO

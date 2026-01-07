@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      routes:
+        # Auth Service Routes (No authentication required)
+        - id: auth-service-register
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/register
+            - Method=POST
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /api/auth/$\{segment}
+        
+        - id: auth-service-login
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/login
+            - Method=POST
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /api/auth/$\{segment}
+        
+        # Event Service Routes (Public read, protected write)
+        - id: event-service-public
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/events/**
+            - Method=GET
+          filters:
+            - RewritePath=/api/events/(?<segment>.*), /api/events/$\{segment}
+        
+        - id: event-service-protected
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/events/**
+            - Method=POST,PUT,DELETE
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/api/events/(?<segment>.*), /api/events/$\{segment}
+        
+        # Inventory Service Routes (All protected)
+        - id: inventory-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/api/inventory/(?<segment>.*), /api/inventory/$\{segment}
+        
+        # Booking Service Routes (All protected)
+        - id: booking-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/bookings/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/api/bookings/(?<segment>.*), /api/bookings/$\{segment}
+        
+        # Payment Service Routes (All protected)
+        - id: payment-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/api/payments/(?<segment>.*), /api/payments/$\{segment}
+      
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            exposedHeaders:
+              - Authorization
+            maxAge: 3600
+
+server:
+  port: 8080
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.ticketblitz: INFO

@@ -1,0 +1,30 @@
+# Test Configuration
+# This file is used when running tests (not production)
+
+server:
+  port: 0  # Random port for tests
+
+spring:
+  datasource:
+    # Use H2 in-memory database for tests (faster, no Docker needed)
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Create tables at start, drop at end
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    show-sql: false  # Don't clutter test output
+
+  h2:
+    console:
+      enabled: false
+
+jwt:
+  secret: TestSecretKeyForJWTTokenGenerationMustBeLongEnough256BitsForTesting
+  expiration: 86400000  # 24 hours

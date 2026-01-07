@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test-route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/test/**
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+server:
+  port: 0  # Random port for testing
+
+logging:
+  level:
+    org.springframework.cloud.gateway: WARN
